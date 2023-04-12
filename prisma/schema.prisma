@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// The User model represents a user in the system
+model User {
+  id             String   @id @default(cuid()) @map("id")
+  name           String   @map("name")
+  email          String   @unique @map("email")
+  hashedPassword String   @map("hashed_password")
+  role           Role[]   @map("role")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  rooms    Room[]
+  messages Message[]
+}
+
+// The Room model represents a chat room in the system
+model Room {
+  id String @id @default(cuid()) @map("id")
+
+  roomTitle       String   @map("room_title")
+  roomDescription String   @map("room_description")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  users    User[]
+  messages Message[]
+}
+
+// The Message model represents a message sent in a chat room
+model Message {
+  id String @id @default(cuid()) @map("id")
+
+  payload   String   @map("payload")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Message belongs to a user (author)
+  author   User   @relation(fields: [authorId], references: [id])
+  authorId String @map("author_id")
+
+  // Message belongs to a room
+  room   Room   @relation(fields: [roomId], references: [id])
+  roomId String @map("room_id")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
