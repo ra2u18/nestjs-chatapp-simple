@@ -38,6 +38,7 @@ A simple and efficient chat room API built using TypeScript and Nest.js framewor
 - [x] Integrate Prisma with api docker file, and docker-compose for prisma and pgadmin
 - [x] Initialized configuration environment for later
 - [x] Initialized api documentation using OpenAPI (swagger)
+- [x] Resolved relative paths into absolute paths using module_aliases and ts-resolve
 - [ ] Integrate initial configuration (Configuration Service, Basic Middlewares, Prisma Integration)
 - [ ] Define data models for `Room`, `User`, and `Message`
 - [ ] Implement the room creation endpoint with a host
