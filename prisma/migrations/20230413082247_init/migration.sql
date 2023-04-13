@@ -19,6 +19,7 @@ CREATE TABLE "Room" (
     "id" TEXT NOT NULL,
     "room_title" TEXT NOT NULL,
     "room_description" TEXT NOT NULL,
+    "host_id" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 

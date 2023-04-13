@@ -110,8 +110,8 @@ export class UserService {
     }
   }
 
-  createToken(user: UserEntity, expiresIn = '1s'): string {
-    const secret = this.config.get<'string'>('jwt_secret');
+  createToken(user: UserEntity, expiresIn = '1d'): string {
+    const secret = this.config.get<string>('jwt_secret');
 
     try {
       const token = jwt.sign(

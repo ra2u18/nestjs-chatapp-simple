@@ -10,12 +10,14 @@ import { UserModule } from './user/user.module';
 import { MiddlewareConsumer } from '@nestjs/common/interfaces';
 import { AuthMiddleware } from './middleware/auth.middleware';
 import { RequestMethod } from '@nestjs/common/enums';
+import { RoomModule } from './room/room.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ load: [configuration] }),
     PrismaModule,
     UserModule,
+    RoomModule,
     HealthModule,
   ],
   controllers: [AppController],

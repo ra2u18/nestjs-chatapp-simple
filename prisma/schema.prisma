@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native"]
 }
 
@@ -17,7 +17,7 @@ model User {
   name           String   @map("name")
   email          String   @unique @map("email")
   hashedPassword String   @map("hashed_password")
-  roles           Role[]   @map("roles")
+  roles          Role[]   @map("roles")
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
 
@@ -30,10 +30,12 @@ model User {
 model Room {
   id String @id @default(cuid()) @map("id")
 
-  roomTitle       String   @map("room_title")
-  roomDescription String   @map("room_description")
-  createdAt       DateTime @default(now()) @map("created_at")
-  updatedAt       DateTime @updatedAt @map("updated_at")
+  roomTitle       String @map("room_title")
+  roomDescription String @map("room_description")
+  hostId          String @map("host_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   // Relations
   users    User[]

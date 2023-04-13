@@ -10,7 +10,7 @@ export interface CustomRequest extends Request {
   user: UserEntity;
 }
 
-Injectable();
+@Injectable()
 export class AuthMiddleware implements NestMiddleware {
   constructor(
     private readonly userService: UserService,
@@ -25,6 +25,7 @@ export class AuthMiddleware implements NestMiddleware {
     }
 
     const token = req.headers.authorization.split(' ')[1];
+    console.log('before');
     const secret = this.config.get<string>('jwt_secret');
 
     try {
