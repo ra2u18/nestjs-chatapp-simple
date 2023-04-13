@@ -17,7 +17,7 @@ export class RoomService {
   async createRoom(
     createRoomDto: CreateRoomDto,
     user: UserEntity,
-  ): Promise<Partial<CreateRoomDto>> {
+  ): Promise<Room> {
     const roomCap = this.config.get<number>('room_cap');
 
     // Grab all rooms hosted by this user, to check
@@ -124,5 +124,13 @@ export class RoomService {
     userToBeAddedId: string,
   ) {
     return room.users.some((user: User) => user.id === userToBeAddedId);
+  }
+
+  buildResponse(room: Room & { users?: User[]; messages?: Message[] }) {
+    if (room?.users && room.users.length > 0) {
+      room.users.map((user) => this.prisma.exclude(user, ['hashedPassword']));
+    }
+
+    return { room };
   }
 }

@@ -16,7 +16,8 @@ export class RoomController {
     @Body('room') createRoomDto: CreateRoomDto,
   ): Promise<any> {
     const room = await this.roomService.createRoom(createRoomDto, currentUser);
-    return room;
+
+    return this.roomService.buildResponse(room);
   }
 
   @Post('rooms/:roomId/users')
@@ -26,13 +27,13 @@ export class RoomController {
     @Body('user') userToRoomDto: UserToRoomDto,
     @Param('roomId') roomId: string,
   ) {
-    const updatedRoom = this.roomService.addUserToRoom(
+    const room = await this.roomService.addUserToRoom(
       userToRoomDto,
       currentUser.id,
       roomId,
     );
 
-    return updatedRoom;
+    return this.roomService.buildResponse(room);
   }
 
   @Post('rooms/:roomId/messages')
@@ -42,12 +43,12 @@ export class RoomController {
     @Body('message') messageDto: MessageDto,
     @Param('roomId') roomId: string,
   ) {
-    const updatedRoom = await this.roomService.sendMessageToRoom(
+    const room = await this.roomService.sendMessageToRoom(
       messageDto,
       roomId,
       currentUser.id,
     );
 
-    return updatedRoom;
+    return this.roomService.buildResponse(room);
   }
 }

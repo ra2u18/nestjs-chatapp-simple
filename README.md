@@ -8,22 +8,119 @@ A simple and efficient chat room API built using TypeScript and Nest.js framewor
 
 - **Method**: `POST`
 - **Path**: `/rooms`
-- **Request body**: `{ "name": "room_name", "hostId": "user_id" }`
-- **Response body**: `{ "id": "room_id", "name": "room_name", "hostId": "user_id" }`
+- **Request body**:
+
+```
+{
+    "room": {
+        "roomTitle": "powerpuff girls",
+        "roomDescription": "za best"
+    }
+}
+```
+
+- **Response body**:
+
+```
+{
+    "room": {
+        "id": "clgf28nuf0000cxc4o1b9zbqz",
+        "roomTitle": "powerpuff girls",
+        "roomDescription": "za best",
+        "hostId": "clgf221z60000cxzwpky0kicz",
+        "createdAt": "2023-04-13T11:51:59.415Z",
+        "updatedAt": "2023-04-13T11:51:59.415Z"
+    }
+}
+```
 
 ### 2. Add a user to a room
 
 - **Method**: `POST`
 - **Path**: `/rooms/:roomId/users`
-- **Request body**: `{ "username": "user_name" }`
-- **Response body**: `{ "id": "user_id", "username": "user_name", "roomId": "room_id" }`
+- **Request body**:
+
+```
+{
+    "user": {
+        "email": "user4@gmail.com"
+    }
+}
+```
+
+- **Response body**:
+
+```
+{
+  room: {
+    "id": "clgf0xw4q0004cxkk43dqzp2p",
+    "roomTitle": "Avengers",
+    "roomDescription": "Best room ever",
+    "hostId": "clgf0xika0002cxkkhmg5xw96",
+    "createdAt": "2023-04-13T11:15:37.322Z",
+    "updatedAt": "2023-04-13T11:15:37.322Z",
+    "users": [
+        {
+            "id": "clgf0xfz10000cxkk2dhouo7m",
+            "name": "user1",
+            "email": "user1@gmail.com",
+            "roles": [
+                "USER"
+            ],
+            "createdAt": "2023-04-13T11:15:16.382Z",
+            "updatedAt": "2023-04-13T11:15:16.382Z"
+        }
+    ]
+  }
+}
+```
 
 ### 3. Send a message to a room
 
 - **Method**: `POST`
 - **Path**: `/rooms/:roomId/messages`
-- **Request body**: `{ "userId": "user_id", "content": "message_content" }`
-- **Response body**: `{ "id": "message_id", "userId": "user_id", "content": "message_content", "timestamp": "message_timestamp" }`
+- **Request body**:
+
+```
+{
+    "message": {
+        "payload": "hello world"
+    }
+}
+```
+
+- **Response body**:
+
+```
+{
+    "room": {
+        "id": "clgf0xw4q0004cxkk43dqzp2p",
+        "roomTitle": "powerpuff girls",
+        "roomDescription": "za best",
+        "hostId": "clgf0xika0002cxkkhmg5xw96",
+        "createdAt": "2023-04-13T11:15:37.322Z",
+        "updatedAt": "2023-04-13T11:15:37.322Z",
+        "messages": [
+            {
+                "id": "clgf1gzu40001cx3c4rj06pa8",
+                "payload": "hello world",
+                "createdAt": "2023-04-13T11:30:28.588Z",
+                "updatedAt": "2023-04-13T11:30:28.594Z",
+                "authorId": "clgf0xika0002cxkkhmg5xw96",
+                "roomId": "clgf0xw4q0004cxkk43dqzp2p"
+            },
+            {
+                "id": "clgf1h3oj0003cx3c99bk8xlq",
+                "payload": "How's everyone",
+                "createdAt": "2023-04-13T11:30:33.572Z",
+                "updatedAt": "2023-04-13T11:30:33.576Z",
+                "authorId": "clgf0xika0002cxkkhmg5xw96",
+                "roomId": "clgf0xw4q0004cxkk43dqzp2p"
+            }
+        ]
+    }
+}
+```
 
 ### 4. Get the latest messages from a room
 
