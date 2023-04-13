@@ -1,8 +1,14 @@
 import { User } from '@app/decorators/user.decorator';
 import { AuthGuard } from '@app/guards/user.guard';
 import { UserEntity } from '@app/user/user.entitiy';
-import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common';
-import { CreateRoomDto, MessageDto, UserToRoomDto } from './room.dto';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Query } from '@nestjs/common/decorators';
+import {
+  CreateRoomDto,
+  GetMessagesQueryDto,
+  MessageDto,
+  UserToRoomDto,
+} from './room.dto';
 import { RoomService } from './room.service';
 
 @Controller()
@@ -50,5 +56,24 @@ export class RoomController {
     );
 
     return this.roomService.buildResponse(room);
+  }
+
+  @Get('rooms/:roomId/messages')
+  @UseGuards(AuthGuard)
+  async getLatestMessages(
+    @User() currentUser: UserEntity,
+    @Param('roomId') roomId: string,
+    @Query() query: GetMessagesQueryDto,
+  ) {
+    let { limit, cursorId } = query;
+
+    const messages = await this.roomService.getLatestMessages(
+      roomId,
+      currentUser.id,
+      cursorId,
+      limit,
+    );
+
+    return messages;
   }
 }

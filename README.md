@@ -126,8 +126,25 @@ A simple and efficient chat room API built using TypeScript and Nest.js framewor
 
 - **Method**: `GET`
 - **Path**: `/rooms/:roomId/messages`
-- **Query parameters**: `?limit=10` (Optional: to limit the number of returned messages)
-- **Response body**: `[{ "id": "message_id", "userId": "user_id", "content": "message_content", "timestamp": "message_timestamp" }, ...]`
+- **Query parameters**: `?limit=1` (Optional: to limit the number of returned messages)
+- **Response body**:
+
+```
+// With a default limit of 1, limit can be set in query params
+{
+    "messages": [
+        {
+            "id": "clgf1hvek0005cx3cso1oy87f",
+            "payload": "hello world",
+            "createdAt": "2023-04-13T11:31:09.501Z",
+            "updatedAt": "2023-04-13T11:31:09.504Z",
+            "authorId": "clgf0xika0002cxkkhmg5xw96",
+            "roomId": "clgf0xw4q0004cxkk43dqzp2p"
+        }
+    ],
+    "cursorId": "clgf1hvek0005cx3cso1oy87f"
+}
+```
 
 ## 📝 Todos
 
@@ -140,6 +157,7 @@ A simple and efficient chat room API built using TypeScript and Nest.js framewor
 - [x] Implemented authentication guard and added room creation feature
 - [x] Implemented add user to room feature
 - [x] Implemented send message to room feature
+- [x] Implemented get latest messages with pagination and cursor id
 
 ## 🌟 Evaluation Criteria
 

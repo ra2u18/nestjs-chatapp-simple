@@ -119,6 +119,38 @@ export class RoomService {
     return updatedRoom;
   }
 
+  async getLatestMessages(
+    roomId: string,
+    userId: string,
+    cursorId: string | undefined,
+    limit: number = 5,
+  ): Promise<{ messages: Message[]; cursorId?: string }> {
+    // check if user is part of the room
+    const room = await this.prisma.room.findFirst({
+      where: { id: roomId },
+      include: { users: true },
+    });
+
+    if (!this.roomHasUser(room, userId)) {
+      throw new HttpException(
+        `You cannot send message to room with title: ${room.roomTitle}`,
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    const messages = await this.prisma.message.findMany({
+      where: { roomId: room.id },
+      orderBy: { createdAt: 'desc' },
+      ...(cursorId && { skip: 1, cursor: { id: cursorId } }),
+      take: limit,
+    });
+
+    return {
+      messages,
+      cursorId: messages[messages.length - 1].id,
+    };
+  }
+
   roomHasUser(
     room: Room & { users: User[]; messages?: Message[] },
     userToBeAddedId: string,
