@@ -58,6 +58,13 @@ export class RoomService {
       include: { users: true },
     });
 
+    if (!room) {
+      throw new HttpException(
+        `There is no room, with id ${roomId}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     if (room.hostId !== userId) {
       throw new HttpException(
         `You cannot add users to room: ${roomId} with title: ${room.roomTitle}`,
@@ -98,6 +105,13 @@ export class RoomService {
       include: { users: true, messages: true },
     });
 
+    if (!room) {
+      throw new HttpException(
+        `There is no room, with id ${roomId}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     if (!this.roomHasUser(room, userId)) {
       throw new HttpException(
         `You cannot send message to room with title: ${room.roomTitle}`,
@@ -123,13 +137,20 @@ export class RoomService {
     roomId: string,
     userId: string,
     cursorId: string | undefined,
-    limit: number = 5,
+    limit: number = 1,
   ): Promise<{ messages: Message[]; cursorId?: string }> {
     // check if user is part of the room
     const room = await this.prisma.room.findFirst({
       where: { id: roomId },
       include: { users: true },
     });
+
+    if (!room) {
+      throw new HttpException(
+        `There is no room, with id ${roomId}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     if (!this.roomHasUser(room, userId)) {
       throw new HttpException(
@@ -147,7 +168,7 @@ export class RoomService {
 
     return {
       messages,
-      cursorId: messages[messages.length - 1].id,
+      cursorId: messages.length !== 0 ? messages[messages.length - 1].id : '',
     };
   }
 

@@ -5,7 +5,11 @@ if (!process.env.IS_TS_NODE) {
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder } from '@nestjs/swagger';
 import { SwaggerModule } from '@nestjs/swagger/dist';
-import { INestApplication, RequestMethod } from '@nestjs/common';
+import {
+  INestApplication,
+  RequestMethod,
+  ValidationPipe,
+} from '@nestjs/common';
 
 import { AppModule } from '@app/app.module';
 
@@ -22,6 +26,14 @@ const setup = (app: INestApplication): INestApplication => {
   app.setGlobalPrefix('api', {
     exclude: [{ path: 'health', method: RequestMethod.GET }],
   });
+
+  // Enable validation globally
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+    }),
+  );
 
   // Setup openapi
   const config = new DocumentBuilder()
