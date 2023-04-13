@@ -17,7 +17,7 @@ model User {
   name           String   @map("name")
   email          String   @unique @map("email")
   hashedPassword String   @map("hashed_password")
-  role           Role[]   @map("role")
+  roles           Role[]   @map("roles")
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
 

@@ -6,14 +6,26 @@ import { AppService } from '@app/app.service';
 import { AppController } from '@app/app.controller';
 import { PrismaModule } from '@app/prisma/prisma.module';
 import { HealthModule } from '@app/health/health.module';
+import { UserModule } from './user/user.module';
+import { MiddlewareConsumer } from '@nestjs/common/interfaces';
+import { AuthMiddleware } from './middleware/auth.middleware';
+import { RequestMethod } from '@nestjs/common/enums';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ load: [configuration] }),
     PrismaModule,
+    UserModule,
     HealthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AuthMiddleware).forRoutes({
+      path: '*',
+      method: RequestMethod.ALL,
+    });
+  }
+}

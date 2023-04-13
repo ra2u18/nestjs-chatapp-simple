@@ -27,6 +27,11 @@ const setup = (app: INestApplication): INestApplication => {
   const config = new DocumentBuilder()
     .setTitle('chat hub')
     .setDescription('REST API for simple chat')
+    .setVersion('1.0.0')
+    .addBearerAuth(
+      { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
+      'accessToken',
+    )
     .addTag('api')
     .build();
 
