@@ -41,6 +41,8 @@ A simple and efficient chat room API built using TypeScript and Nest.js framewor
 - [x] Resolved relative paths into absolute paths using module_aliases and ts-resolve
 - [x] Initialized a minimalistic user authentication with middleware in place
 - [x] Implemented authentication guard and added room creation feature
+- [x] Implemented add user to room feature
+- [x] Implemented send message to room feature
 
 ## 🌟 Evaluation Criteria
 

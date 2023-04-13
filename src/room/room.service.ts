@@ -4,7 +4,8 @@ import { Injectable } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common/enums';
 import { HttpException } from '@nestjs/common/exceptions';
 import { ConfigService } from '@nestjs/config';
-import { CreateRoomDto } from './room.dto';
+import { Message, Room, User } from '@prisma/client';
+import { CreateRoomDto, MessageDto, UserToRoomDto } from './room.dto';
 
 @Injectable()
 export class RoomService {
@@ -44,5 +45,84 @@ export class RoomService {
     });
 
     return newRoom;
+  }
+
+  async addUserToRoom(
+    userToRoomDto: UserToRoomDto,
+    userId: string,
+    roomId: string,
+  ): Promise<Room & { users: User[] }> {
+    // Check that the user who s doing the request is the hostid
+    const room = await this.prisma.room.findFirst({
+      where: { id: roomId },
+      include: { users: true },
+    });
+
+    if (room.hostId !== userId) {
+      throw new HttpException(
+        `You cannot add users to room: ${roomId} with title: ${room.roomTitle}`,
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    // Check that the user who's doing the request it's not adding himself
+    // in the room or an existing user
+    const userToBeAdded = await this.prisma.user.findFirst({
+      where: { email: userToRoomDto.email },
+    });
+
+    if (this.roomHasUser(room, userToBeAdded.id)) {
+      throw new HttpException(
+        `You cannot add the same user twice to room: ${roomId} with title: ${room.roomTitle}`,
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    const updatedRoom = await this.prisma.room.update({
+      data: { users: { connect: { id: userToBeAdded.id } } },
+      where: { id: room.id },
+      include: { users: true },
+    });
+
+    return updatedRoom;
+  }
+
+  async sendMessageToRoom(
+    messageDto: MessageDto,
+    roomId: string,
+    userId: string,
+  ): Promise<Room & { messages: Message[] }> {
+    // check if user is part of the room
+    const room = await this.prisma.room.findFirst({
+      where: { id: roomId },
+      include: { users: true, messages: true },
+    });
+
+    if (!this.roomHasUser(room, userId)) {
+      throw new HttpException(
+        `You cannot send message to room with title: ${room.roomTitle}`,
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    // Create the message record
+    const message = await this.prisma.message.create({
+      data: { payload: messageDto.payload, authorId: userId, roomId: room.id },
+    });
+
+    const updatedRoom = await this.prisma.room.update({
+      data: { messages: { connect: { id: message.id } } },
+      where: { id: room.id },
+      include: { messages: true },
+    });
+
+    return updatedRoom;
+  }
+
+  roomHasUser(
+    room: Room & { users: User[]; messages?: Message[] },
+    userToBeAddedId: string,
+  ) {
+    return room.users.some((user: User) => user.id === userToBeAddedId);
   }
 }
