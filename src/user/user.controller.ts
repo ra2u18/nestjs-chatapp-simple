@@ -1,13 +1,16 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, HttpStatus } from '@nestjs/common';
 import {
-  ApiProperty,
   ApiTags,
   ApiBearerAuth,
-  ApiCreatedResponse,
   ApiOperation,
   ApiResponse,
+  ApiBody,
 } from '@nestjs/swagger';
-import { CreateUserDto, LoginUserDto } from './user.dto';
+import {
+  CreateUserSwaggerBodyDto,
+  LoginUserSwaggerBodyDto,
+} from './swagger/swagger.dto';
+import { CreateUserDto, LoginUserDto, UserResponseDto } from './user.dto';
 import { UserEntity, UserResponse } from './user.entitiy';
 import { UserService } from './user.service';
 
@@ -19,7 +22,12 @@ export class UserController {
 
   @Post('users')
   @ApiOperation({ summary: 'Create a new user for our chat hub' })
-  // @ApiCreatedResponse({ type: UserResponse })
+  @ApiBody({ type: CreateUserSwaggerBodyDto })
+  @ApiResponse({ status: HttpStatus.CREATED, type: UserResponseDto })
+  @ApiResponse({
+    status: HttpStatus.UNPROCESSABLE_ENTITY,
+    description: 'Email is taken',
+  })
   async createUser(
     @Body('user') createUserDto: CreateUserDto,
   ): Promise<UserResponse> {
@@ -28,10 +36,11 @@ export class UserController {
   }
 
   @Post('users/login')
+  @ApiBody({ type: LoginUserSwaggerBodyDto })
   @ApiResponse({
     status: 200,
     description: 'User successfully logged in and received a token',
-    type: UserEntity,
+    type: UserResponseDto,
   })
   @ApiOperation({ summary: 'Logs in created user to chat hub' })
   async login(@Body('user') loginUserDto: LoginUserDto): Promise<UserResponse> {

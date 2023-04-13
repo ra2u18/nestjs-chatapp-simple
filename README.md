@@ -158,6 +158,7 @@ A simple and efficient chat room API built using TypeScript and Nest.js framewor
 - [x] Implemented add user to room feature
 - [x] Implemented send message to room feature
 - [x] Implemented get latest messages with pagination and cursor id
+- [x] Finished swagger documentation
 
 ## 🌟 Evaluation Criteria
 

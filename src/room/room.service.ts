@@ -18,7 +18,7 @@ export class RoomService {
     createRoomDto: CreateRoomDto,
     user: UserEntity,
   ): Promise<Room> {
-    const roomCap = this.config.get<number>('room_cap');
+    const roomCap = this.config.get<number>('rooms_cap');
 
     // Grab all rooms hosted by this user, to check
     // whether we can create more rooms or stop here
@@ -77,6 +77,13 @@ export class RoomService {
     const userToBeAdded = await this.prisma.user.findFirst({
       where: { email: userToRoomDto.email },
     });
+
+    if (!userToBeAdded) {
+      throw new HttpException(
+        `User doesn't exist with email ${userToRoomDto.email}`,
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
 
     if (this.roomHasUser(room, userToBeAdded.id)) {
       throw new HttpException(

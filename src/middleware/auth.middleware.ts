@@ -25,7 +25,6 @@ export class AuthMiddleware implements NestMiddleware {
     }
 
     const token = req.headers.authorization.split(' ')[1];
-    console.log('before');
     const secret = this.config.get<string>('jwt_secret');
 
     try {

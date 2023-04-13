@@ -1,10 +1,4 @@
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsNotEmpty, IsNumberString, IsOptional } from 'class-validator';
 
 export class CreateRoomDto {
   @IsNotEmpty()
@@ -25,8 +19,8 @@ export class MessageDto {
 
 export class GetMessagesQueryDto {
   @IsOptional()
-  @IsNumber()
-  readonly limit?: number;
+  @IsNumberString()
+  readonly limit?: string;
 
   @IsOptional()
   readonly cursorId?: string;
